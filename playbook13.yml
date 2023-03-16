@@ -1,0 +1,30 @@
+---
+- name: configuring apache2
+  hosts: all
+  tasks: 
+   - name: Install apache2
+     apt:
+       name: apache2
+       state: present
+       update_cache: yes
+     notify: check url response   
+   - name: Edit index.html file
+     copy:
+       content: "I am a good DevOps Engineer"
+       dest: /var/www/html/index.html
+     notify: Restart apache2
+  handlers:
+   - name: Restart apache2
+     service:
+       name: apache2
+       state: restarted
+   - name: check url response
+     uri:
+       url: "{{item}}"
+       status_code: 200
+     with_items:   
+       - https://172.31.7.82
+       - https://172.31.14.56  
+...
+         
+         
